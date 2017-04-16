@@ -1,61 +1,199 @@
----
-layout: default
----
-
 <div class="home">
 
-  <h1 class="page-heading">Posts</h1>
+    <h1 class="page-heading">Nutrition Data</h1>
 
-  <ul class="post-list">
-    {% for post in site.posts %}
-      <li>
-        <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
-
-        <h2>
-          <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
-        </h2>
-      </li>
-    {% endfor %}
-  </ul>
-
-  <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | prepend: site.baseurl }}">via RSS</a></p>
-    <link
+    <!--link
      rel="stylesheet"
      href="http://code.jquery.com/ui/1.9.0/themes/smoothness/jquery-ui.css" />
     <style type="text/css">
         .ui-helper-hidden-accessible { position: absolute; left: -9999px; }
     </style>
-    <script src="../scripts/jquery-1.11.1.min.js"></script>
-    <script src="../scripts/jquery-ui.min.js"></script>
+    <script src="scripts/jquery-ui.min.js"></script>
+    <script src="scripts/loadash.js"></script>
+    <script src="scripts/jquery-1.11.1.min.js"></script-->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js">
+
+    </script>
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" />
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.9.0/lodash.min.js"></script>
     <script type="text/javascript">
         $(function () {
-            var getData = function (request, response) {
-                $.getJSON(
-                    "http://gd.geobytes.com/AutoCompleteCity?callback=?&q=" + request.term,
-                    function (data) {
-                        response(data);
-                    });
+            var transform = function (i) {
+                var output = _.map(i, function (x) {
+                    return {
+                        "key": x.id,
+                        "value": x.text
+                    };
+                });
+                return output;
             };
+            var getData = function (request, response) {
+                // $.getJSON(
+                //   "https://trackapi.nutritionix.com/v2/search/instant?query=" + request.term + "&appId=3705d288&appKey=88694a09761b650122c34993884683ce",
+                // function (data) {
+                //   var output = _.map(data, function (i) {
+                //     return {
+                //       "key": i.id,
+                //     "value": i.text
+                //            };
+                //      });
+                //    response(output);
+                // });
+                $.ajax({
+                    type: 'GET',
+                    dataType: 'json',
+                    url: "https://trackapi.nutritionix.com/v2/search/instant?query=" + request.term,
+                    headers: {
+                        "x-app-id": "3705d288",
+                        "x-app-key": "88694a09761b650122c34993884683ce"
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        var output = _.map(data.branded, function (i) {
+                            return {
+                                "key": i.nix_item_id,
+                                "value": i.food_name
+                            };
+                        });
+                        response(output);
 
+
+                    }
+                });
+            }
             var selectItem = function (event, ui) {
                 $("#myText").val(ui.item.value);
-            }
+                var selectedItemID = ui.item.key;
+                console.log(selectedItemID);
+                $.ajax({
+                    type: 'GET',
+                    dataType: 'json',
+                    url: "https://trackapi.nutritionix.com/v2/search/item?nix_item_id=" + selectedItemID,
+                    headers: {
+                        "x-app-id": "3705d288",
+                        "x-app-key": "88694a09761b650122c34993884683ce"
+                    },
+                    success: function (data) {
+                        console.log(JSON.stringify(data));
+                        var trHTMLString = formatString(data);
+                        $('#resultsTable').append(trHTMLString);
+                    }
+
+
+                });
+
+                var formatString = function (data) {
+                    var trhtml = '';
+                    var food = data.foods[0];
+                    trhtml += '<section class="performance-facts"> ';
+                    trhtml += '<header class="performance-facts__header">';
+                    trhtml += '  <h1 class="performance-facts__title">Nutrition Facts</h1>';
+                    trhtml += '    <p>Serving Size ' + food.serving_qty + food.serving_unit + ' (about ' + food.serving_weight_grams + 'g)';
+                    trhtml += '   </header>';
+                    trhtml += '  <table class="performance-facts__table">';
+                    trhtml += '    <thead>';
+                    trhtml += '      <tr>';
+                    trhtml += '        <th colspan="3" class="small-info">';
+                    trhtml += '          Amount Per Serving';
+                    trhtml += '        </th>';
+                    trhtml += '      </tr>';
+                    trhtml += '    </thead>';
+                    trhtml += '    <tbody>';
+                    trhtml += '      <tr>';
+                    trhtml += '        <th colspan="2">';
+                    trhtml += '          <b>Calories</b> ';
+                    trhtml +=  food.nf_calories  ;
+                    trhtml += '         </th>';
+                    trhtml += '      </tr>';
+                    trhtml += '      <tr class="thick-row">';
+                    trhtml += '      </tr>';
+                    trhtml += '      <tr>';
+                    trhtml += '        <th colspan="2">';
+                    trhtml += '          <b>Total Fat</b> ';
+                    trhtml += food.nf_total_fat==null?0:food.nf_total_fat ;
+                    trhtml += '        </th>';
+                    trhtml += '      </tr>';
+                    trhtml += '      <tr>';
+                    trhtml += '        <td class="blank-cell">';
+                    trhtml += '        </td>';
+                    trhtml += '        <th>';
+                    trhtml += '          Saturated Fat ';
+                    trhtml +=  food.nf_saturated_fat==null?0:food.nf_saturated_fat ;
+                    trhtml += '         <th>';
+                    trhtml += '      </tr>';
+                    trhtml += '      <tr>';
+                    trhtml += '        <th colspan="2">';
+                    trhtml += '          <b>Cholesterol</b> ';
+                    trhtml +=  food.nf_cholesterol==null?0:food.nf_cholesterol ;
+                    trhtml += '         </th>';
+                    trhtml += '      </tr>';
+                    trhtml += '      <tr>';
+                    trhtml += '        <th colspan="2">';
+                    trhtml += '          <b>Sodium</b> ';
+                    trhtml += food.nf_sodium==null?0:food.nf_sodium ;
+                    trhtml += '         </th>';
+                    trhtml += '      </tr>';
+                    trhtml += '      <tr>';
+                    trhtml += '        <th colspan="2">';
+                    trhtml += '          <b>Total Carbohydrate</b> ';
+                    trhtml +=  food.nf_total_carbohydrate==null?0:food.nf_total_carbohydrate + 'g ';
+                    trhtml += '        </th>';
+                    trhtml += '      </tr>';
+                    trhtml += '      <tr>';
+                    trhtml += '        <td class="blank-cell">';
+                    trhtml += '        </td>';
+                    trhtml += '        <th>';
+                    trhtml += '          Dietary Fiber ';
+                    trhtml +=  food.nf_dietary_fiber==null?0:food.nf_dietary_fiber + 'g ';
+                    trhtml += '        </th>';
+                    trhtml += '      </tr>';
+                    trhtml += '      <tr>';
+                    trhtml += '        <td class="blank-cell">';
+                    trhtml += '        </td>';
+                    trhtml += '        <th>';
+                    trhtml += '          Sugars ';
+                    trhtml +=  food.nf_sugars==null?0:food.nf_sugars + 'g ';
+                    trhtml += '        </th>';
+                    trhtml += '        <td>';
+                    trhtml += '        </td>';
+                    trhtml += '      </tr>';
+                    trhtml += '      <tr class="thick-end">';
+                    trhtml += '        <th colspan="2">';
+                    trhtml += '          <b>Protein</b> ';
+                    trhtml +=  food.nf_protein + 'g';
+                    trhtml += '        </th>';
+                    trhtml += '        <td>';
+                    trhtml += '        </td>';
+                    trhtml += '      </tr>';
+                    trhtml += '    </tbody>';
+                    trhtml += '  </table>';
+                    trhtml += '</section>';
+
+                    return trhtml;
+
+                    // trHTML += '<tr><th> Item Name </th>    <th>Brand Name</th>     <th>Serving Size</th> </tr>';
+                    //$.each(itemResults, function (i, item) {
+                    //  trHTML += '<tr><td>' + item.item_name + '</td><td>' + item.brand_name + '</td><td>' + item.nf_serving_size_qty + '</td></tr>';
+                    //});
+
+                }
+
+
+
+            };
 
             $("#myText").autocomplete({
+                //source: transform([{ "id": 723, "text": "lays" }, { "id": 192354, "text": "lays crisps" }, { "id": 241087, "text": "lays classic" }, { "id": 67747, "text": "lays barbecue" }, { "id": 429970, "text": "bbq lays" }, { "id": 801, "text": "baked lays" }, { "id": 1550, "text": "lays chips" }, { "id": 87495, "text": "fritos lays" }, { "id": 955561, "text": "lays chip" }, { "id": 121285, "text": "lays wavy" }]),
                 source: getData,
                 select: selectItem,
                 minLength: 4
             });
         });
     </script>
-
-<body>
     <h2>AutoComplete</h2>
     <p>Type minimum 4 characters in the textbox</p>
     <input id="myText" />
-</body>
-
+    <table id="resultsTable" />
 
 </div>
-
-
