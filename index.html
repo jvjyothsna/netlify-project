@@ -1,236 +1,7 @@
-<head>
-	<link rel="stylesheet" href="https://github.com/jvjyothsna/netlify-project/blob/master/css/myStyle.css">
-	<script>
-		var acc = document.getElementsByClassName("accordion");
-var i;
-
-for (i = 0; i < acc.length; i++) {
-    acc[i].onclick = function(){
-        /* Toggle between adding and removing the "active" class,
-        to highlight the button that controls the panel */
-        this.classList.toggle("active");
-
-        /* Toggle between hiding and showing the active panel */
-        var panel = this.nextElementSibling;
-        if (panel.style.display === "block") {
-            panel.style.display = "none";
-        } else {
-            panel.style.display = "block";
-        }
-    }
-}
-	</script>
-</head>
 <div class="home">
-<!--button class="accordion">Section 1</button>
-<div class="panel">
- 
+    <b>Rank your 5 favorite, and least favorite, activities from this list: <u>https://gist.github.com/fool/b0f254ff8c72a5765b6a9138249789d6</u>  </b><br/>
 
-
-    <h1 class="page-heading">Nutrition Data</h1>
-
-    <link
-     rel="stylesheet"
-     href="http://code.jquery.com/ui/1.9.0/themes/smoothness/jquery-ui.css" />
-    <style type="text/css">
-        .ui-helper-hidden-accessible { position: absolute; left: -9999px; }
-    </style>
-    <script src="scripts/jquery-ui.min.js"></script>
-    <script src="scripts/loadash.js"></script>
-    <script src="scripts/jquery-1.11.1.min.js"></script>
-    <!--script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js">
-    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.9.0/lodash.min.js"></script>
-    </script-->
-    <!--link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" />
-    <!--script type="text/javascript">
-        $(function () {
-            var transform = function (i) {
-                var output = _.map(i, function (x) {
-                    return {
-                        "key": x.id,
-                        "value": x.text
-                    };
-                });
-                return output;
-            };
-            var getData = function (request, response) {
-                // $.getJSON(
-                //   "https://trackapi.nutritionix.com/v2/search/instant?query=" + request.term + "&appId=3705d288&appKey=88694a09761b650122c34993884683ce",
-                // function (data) {
-                //   var output = _.map(data, function (i) {
-                //     return {
-                //       "key": i.id,
-                //     "value": i.text
-                //            };
-                //      });
-                //    response(output);
-                // });
-                $.ajax({
-                    type: 'GET',
-                    dataType: 'json',
-                    url: "https://trackapi.nutritionix.com/v2/search/instant?query=" + request.term,
-                    headers: {
-                        "x-app-id": "3705d288",
-                        "x-app-key": "88694a09761b650122c34993884683ce"
-                    },
-                    success: function (data) {
-                        console.log(data);
-                        var output = _.map(data.branded, function (i) {
-                            return {
-                                "key": i.nix_item_id,
-                                "value": i.food_name
-                            };
-                        });
-                        response(output);
-
-
-                    }
-                });
-            }
-            var selectItem = function (event, ui) {
-                $("#myText").val(ui.item.value);
-                var selectedItemID = ui.item.key;
-                console.log(selectedItemID);
-                $.ajax({
-                    type: 'GET',
-                    dataType: 'json',
-                    url: "https://trackapi.nutritionix.com/v2/search/item?nix_item_id=" + selectedItemID,
-                    headers: {
-                        "x-app-id": "3705d288",
-                        "x-app-key": "88694a09761b650122c34993884683ce"
-                    },
-                    success: function (data) {
-                        console.log(JSON.stringify(data));
-                        var trHTMLString = formatString(data);
-                        $('#resultsTable').append(trHTMLString);
-                    }
-
-
-                });
-
-                var formatString = function (data) {
-                    var trhtml = '';
-                    var food = data.foods[0];
-                    trhtml += '<section class="performance-facts"> ';
-                    trhtml += '<header class="performance-facts__header">';
-                    trhtml += '  <h1 class="performance-facts__title">Nutrition Facts</h1>';
-                    trhtml += '    <p>Serving Size ' + food.serving_qty + food.serving_unit + ' (about ' + food.serving_weight_grams + 'g)';
-                    trhtml += '   </header>';
-                    trhtml += '  <table class="performance-facts__table">';
-                    trhtml += '    <thead>';
-                    trhtml += '      <tr>';
-                    trhtml += '        <th colspan="3" class="small-info">';
-                    trhtml += '          Amount Per Serving';
-                    trhtml += '        </th>';
-                    trhtml += '      </tr>';
-                    trhtml += '    </thead>';
-                    trhtml += '    <tbody>';
-                    trhtml += '      <tr>';
-                    trhtml += '        <th colspan="2">';
-                    trhtml += '          <b>Calories</b> ';
-                    trhtml +=  food.nf_calories  ;
-                    trhtml += '         </th>';
-                    trhtml += '      </tr>';
-                    trhtml += '      <tr class="thick-row">';
-                    trhtml += '      </tr>';
-                    trhtml += '      <tr>';
-                    trhtml += '        <th colspan="2">';
-                    trhtml += '          <b>Total Fat</b> ';
-                    trhtml += food.nf_total_fat==null?0:food.nf_total_fat ;
-                    trhtml += '        </th>';
-                    trhtml += '      </tr>';
-                    trhtml += '      <tr>';
-                    trhtml += '        <td class="blank-cell">';
-                    trhtml += '        </td>';
-                    trhtml += '        <th>';
-                    trhtml += '          Saturated Fat ';
-                    trhtml +=  food.nf_saturated_fat==null?0:food.nf_saturated_fat ;
-                    trhtml += '         <th>';
-                    trhtml += '      </tr>';
-                    trhtml += '      <tr>';
-                    trhtml += '        <th colspan="2">';
-                    trhtml += '          <b>Cholesterol</b> ';
-                    trhtml +=  food.nf_cholesterol==null?0:food.nf_cholesterol ;
-                    trhtml += '         </th>';
-                    trhtml += '      </tr>';
-                    trhtml += '      <tr>';
-                    trhtml += '        <th colspan="2">';
-                    trhtml += '          <b>Sodium</b> ';
-                    trhtml += food.nf_sodium==null?0:food.nf_sodium ;
-                    trhtml += '         </th>';
-                    trhtml += '      </tr>';
-                    trhtml += '      <tr>';
-                    trhtml += '        <th colspan="2">';
-                    trhtml += '          <b>Total Carbohydrate</b> ';
-                    trhtml +=  food.nf_total_carbohydrate==null?0:food.nf_total_carbohydrate + 'g ';
-                    trhtml += '        </th>';
-                    trhtml += '      </tr>';
-                    trhtml += '      <tr>';
-                    trhtml += '        <td class="blank-cell">';
-                    trhtml += '        </td>';
-                    trhtml += '        <th>';
-                    trhtml += '          Dietary Fiber ';
-                    trhtml +=  food.nf_dietary_fiber==null?0:food.nf_dietary_fiber + 'g ';
-                    trhtml += '        </th>';
-                    trhtml += '      </tr>';
-                    trhtml += '      <tr>';
-                    trhtml += '        <td class="blank-cell">';
-                    trhtml += '        </td>';
-                    trhtml += '        <th>';
-                    trhtml += '          Sugars ';
-                    trhtml +=  food.nf_sugars==null?0:food.nf_sugars + 'g ';
-                    trhtml += '        </th>';
-                    trhtml += '        <td>';
-                    trhtml += '        </td>';
-                    trhtml += '      </tr>';
-                    trhtml += '      <tr class="thick-end">';
-                    trhtml += '        <th colspan="2">';
-                    trhtml += '          <b>Protein</b> ';
-                    trhtml +=  food.nf_protein + 'g';
-                    trhtml += '        </th>';
-                    trhtml += '        <td>';
-                    trhtml += '        </td>';
-                    trhtml += '      </tr>';
-                    trhtml += '    </tbody>';
-                    trhtml += '  </table>';
-                    trhtml += '</section>';
-
-                    return trhtml;
-
-                    // trHTML += '<tr><th> Item Name </th>    <th>Brand Name</th>     <th>Serving Size</th> </tr>';
-                    //$.each(itemResults, function (i, item) {
-                    //  trHTML += '<tr><td>' + item.item_name + '</td><td>' + item.brand_name + '</td><td>' + item.nf_serving_size_qty + '</td></tr>';
-                    //});
-
-                }
-
-
-
-            };
-
-            $("#myText").autocomplete({
-                //source: transform([{ "id": 723, "text": "lays" }, { "id": 192354, "text": "lays crisps" }, { "id": 241087, "text": "lays classic" }, { "id": 67747, "text": "lays barbecue" }, { "id": 429970, "text": "bbq lays" }, { "id": 801, "text": "baked lays" }, { "id": 1550, "text": "lays chips" }, { "id": 87495, "text": "fritos lays" }, { "id": 955561, "text": "lays chip" }, { "id": 121285, "text": "lays wavy" }]),
-                source: getData,
-                select: selectItem,
-                minLength: 4
-            });
-        });
-    </script>
-    <h2>AutoComplete</h2>
-    <p>Type minimum 4 characters in the textbox</p>
-    <input id="myText" />
-    <table id="resultsTable" />
-
-</div-->
-
-
-<button class="accordion">Section 2</button>
-<div class="panel">
- 
-<b>Rank your 5 favorite, and least favorite, activities from this list: <u>https://gist.github.com/fool/b0f254ff8c72a5765b6a9138249789d6</u>  </b><br/>
-
-	<i><b> Favorite:</b><br/>
+    <i><b> Favorite:</b><br/>
 	Work with the development team to help design a new feature based on feedback from customers<br/>
 	Respond to 60+ support requests via email or chat every day<br/>
 	Create video tutorials to help teach users a specific feature or use case.<br/>
@@ -244,50 +15,48 @@ for (i = 0; i < acc.length; i++) {
 	Work with prospective customers to explain our service and the pricing model<br/>
 	Manage a support team </i><br/><br/>
 
-<b>What is your favorite thing about providing technical support?</b><br/>
-	<p><i>Problem solving and troubleshooting technical issues are something that excite me a lot. Resolving customer issues provides me an immense amount of satisfaction. I enjoy articulating technical issues/resolutions to customer and thus gaining appreciations from them. Technical support gives opportunities to resolve real time issues with the sense of urgency. I strongly think there will be a lot of visibility resolving complex issues and thus provide opportunities for career growth.</i></p><br/>
-	 
-	 
-<b>What did you think of our service during the time you used it?  Be honest!  “it sucked” isn’t a wrong answer unless you don’t elaborate and provide some constructive criticism ;)</b>
-	 
-	<p><i>I was very impressed to see how easy it was to just get started with the Netlify service. Videos and documentation helped me find out more about particular features. The ability to host a static site with continuous deployment in less than a minute(18 secs, 30 secs) is just amazing. Integration with Git definitely helps definitely helps with deploying already existing repositories in Netlify. I really think it’s a first of its kind to provide Infrastructure as a service for deployment of the applications. I was so impressed that I took this as an opportunity and have already started using it for my personal project.</i></p> 
-	 
-	<p><i>I am not aware of all the features of Netlify yet, but I think a feature that can send out an email notification after a  successful deployment would be beneficial. Email notifications always may not be the best way to notify. Other ways to notify may be to have log or status update config file within the same Git repository. That file can be updated by Netlify about information on successfully deployment or any other meta information on the deployment. With complex applications it may become cumbersome to look at the Netlify website and refresh it each time to see the status of deployment.</i></p><br/>
-	 
-	 
-<b>Tell about how you made your site and why you chose the tools you did.  Briefly explain a challenge you experienced in setting up this site and how you solved it.</b>
-	<i><p>I chose Jekyll and jQuery to build the website. I think Jquery helps in building applications rapidly in short amount of time. I took this as an opportunity to do some quick POC of a nutrition application that I am yet to build.</p></i>
-	Challenge: <i><p>When jekyll generated the initial skeleton, the files it generated were not intuitive. I had to quickly navigate through the folders to understand the structure of the project and also refer some blog posts to fully understand the skeleton it built.</p></i><br/><br/>
-	 
-<b>Could you give us a suggestion to improve this test or the job posting?</b>
-	<i><p>I think the take home project would probably take more than 4hrs to complete. For a newbie like me to netlify, it will definitely help to learn about the platform. But for someone who is familiar with netlify it would be significant investment in time to complete the project. I suggest making the take home test somewhat shorter than the existing one. </p>
+    <b>What is your favorite thing about providing technical support?</b><br/>
+    <p><i>Problem solving and troubleshooting technical issues are something that excite me a lot. Resolving customer issues provides me an immense amount of satisfaction. I enjoy articulating technical issues/resolutions to customer and thus gaining appreciations from them. Technical support gives opportunities to resolve real time issues with the sense of urgency. I strongly think there will be a lot of visibility resolving complex issues and thus provide opportunities for career growth.</i></p><br/>
+
+
+    <b>What did you think of our service during the time you used it?  Be honest!  “it sucked” isn’t a wrong answer unless you don’t elaborate and provide some constructive criticism ;)</b>
+
+    <p><i>I was very impressed to see how easy it was to just get started with the Netlify service. Videos and documentation helped me find out more about particular features. The ability to host a static site with continuous deployment in less than a minute(18 secs, 30 secs) is just amazing. Integration with Git definitely helps definitely helps with deploying already existing repositories in Netlify. I really think it’s a first of its kind to provide Infrastructure as a service for deployment of the applications. I was so impressed that I took this as an opportunity and have already started using it for my personal project.</i></p>
+
+    <p><i>I am not aware of all the features of Netlify yet, but I think a feature that can send out an email notification after a  successful deployment would be beneficial. Email notifications always may not be the best way to notify. Other ways to notify may be to have log or status update config file within the same Git repository. That file can be updated by Netlify about information on successfully deployment or any other meta information on the deployment. With complex applications it may become cumbersome to look at the Netlify website and refresh it each time to see the status of deployment.</i></p><br/>
+
+
+    <b>Tell about how you made your site and why you chose the tools you did.  Briefly explain a challenge you experienced in setting up this site and how you solved it.</b>
+    <i><p>I chose Jekyll and jQuery to build the website. I think Jquery helps in building applications rapidly in short amount of time. I took this as an opportunity to do some quick POC of a nutrition application that I am yet to build.</p></i>    Challenge: <i><p>When jekyll generated the initial skeleton, the files it generated were not intuitive. I had to quickly navigate through the folders to understand the structure of the project and also refer some blog posts to fully understand the skeleton it built.</p></i><br/><br/>
+
+    <b>Could you give us a suggestion to improve this test or the job posting?</b>
+    <i><p>I think the take home project would probably take more than 4hrs to complete. For a newbie like me to netlify, it will definitely help to learn about the platform. But for someone who is familiar with netlify it would be significant investment in time to complete the project. I suggest making the take home test somewhat shorter than the existing one. </p>
 	<p>The job posting does not give clear information on the number of years of experience required on a per skill basis. Mentioning that might be useful for the job applicant gauge the expectations of the role and position.</p></i><br/>
-	 
-<b>Provide a link to documentation for a technical/developer-focused product, that you think are well done, and briefly explain why you think they are well done.</b><br/>
-	<i><p>The documentation that I came across  <a href="https://access.redhat.com/documentation/en/red-hat-enterprise-linux/">here </a> for Redhat product documentation was very helpful. The great detail of information helped me crack the Red Hat Certified Linux Engineer exam. The things I think were done well here is the capability to filter out the required documentation precisely using filter tags, good categorization of the topics to reach to the required information quickly, highly informative videos, ability to provide feedback, ability to get the documentation in downloadable formats etc.,</p></i><br/>
-	 
-<b>Why do you think SSL/HTTPS is important?</b><br/>
-	<i><p>HTTPS protects the integrity of your website, helps prevent intruders from tampering with the communications between your websites and your users’ browsers. Secure Sockets Layer(SSL) is used to secure the data transmitted over the internet between your computer and the destination servers. This could be the credit card information, username or password, basically any important information you wouldn’t want others to know. With an SSL certificate, any information that is transmitted becomes encrypted making it unreadable to everyone except the intended server. With the next generation applications moving towards the could I think SSL and HTTPs play much more important role.</p></i><br/>
-	 
-	 
-<b>Explain, in a couple of paragraphs, what you think 2 major challenges around DNS configuration are for less-technical internet end-users</b><br/>
-	 <i><p>DNS plays an important role in the area of IT infrastructure as the applications and websites appear to become invisible on its failure. This brings about a downtime to all the applications that are being served by the DNS thus causing a direct loss to the customers and the company. Therefore, configuring the DNS such that it is high available avoiding single point of failure is one of the challenges. Otherwise, during peak times, multiple systems may flood the servers with requests bringing down the system which is traditionally called Denial Of Service attacks. The challenge here is to design and configure the DNS architecture such that the DNS servers are diversified across geographic locations, placing the DNS servers across different routers and different subnets etc.,</p>
+
+    <b>Provide a link to documentation for a technical/developer-focused product, that you think are well done, and briefly explain why you think they are well done.</b><br/>
+    <i><p>The documentation that I came across  <a href="https://access.redhat.com/documentation/en/red-hat-enterprise-linux/">here </a> for Redhat product documentation was very helpful. The great detail of information helped me crack the Red Hat Certified Linux Engineer exam. The things I think were done well here is the capability to filter out the required documentation precisely using filter tags, good categorization of the topics to reach to the required information quickly, highly informative videos, ability to provide feedback, ability to get the documentation in downloadable formats etc.,</p></i><br/>
+
+    <b>Why do you think SSL/HTTPS is important?</b><br/>
+    <i><p>HTTPS protects the integrity of your website, helps prevent intruders from tampering with the communications between your websites and your users’ browsers. Secure Sockets Layer(SSL) is used to secure the data transmitted over the internet between your computer and the destination servers. This could be the credit card information, username or password, basically any important information you wouldn’t want others to know. With an SSL certificate, any information that is transmitted becomes encrypted making it unreadable to everyone except the intended server. With the next generation applications moving towards the could I think SSL and HTTPs play much more important role.</p></i><br/>
+
+
+    <b>Explain, in a couple of paragraphs, what you think 2 major challenges around DNS configuration are for less-technical internet end-users</b><br/>
+    <i><p>DNS plays an important role in the area of IT infrastructure as the applications and websites appear to become invisible on its failure. This brings about a downtime to all the applications that are being served by the DNS thus causing a direct loss to the customers and the company. Therefore, configuring the DNS such that it is high available avoiding single point of failure is one of the challenges. Otherwise, during peak times, multiple systems may flood the servers with requests bringing down the system which is traditionally called Denial Of Service attacks. The challenge here is to design and configure the DNS architecture such that the DNS servers are diversified across geographic locations, placing the DNS servers across different routers and different subnets etc.,</p>
 	 
 	<p>Another major challenge is configuring and embedding an intelligent load balancer within the DNS server. Based on the application it is serving we need to determine the right load balancing scheme so that at any given point of time the requests are distributed across the servers by the DNS load balancer. Not all applications take advantage of Round Robin load balancing scheme. Sometimes we might need to go for weight based load balancing scheme(where requests are dsitributed the the servers based on the wieght/priority of the requests). Determining the configuration details to accommodate these upfront is a major challenge because we may not know all the details of the applications that are yet to be deployed on to the servers.</p></i><br/>
-	 
-<b>A customer writes in saying their “site won’t build”.  Compose your best short (2-paragraph) customer-facing answer without any additional data, that could be useful in the generic case but would also lead to a customer providing a more actionable response.</b><br/>
-	 <i><p>First of all, Thank you for trying out our product and reaching out to us for this issue.<br/>
+
+    <b>A customer writes in saying their “site won’t build”.  Compose your best short (2-paragraph) customer-facing answer without any additional data, that could be useful in the generic case but would also lead to a customer providing a more actionable response.</b><br/>
+    <i><p>First of all, Thank you for trying out our product and reaching out to us for this issue.<br/>
 	Sorry to hear that you have issues with building the site with our service.</p>
 	 
 	<p>The time to build the site will depend on the scale of the application so could you please verify for us if you are actually seeing the error message or details that the site actually did not build? There may few other reasons as to why it would not build. Can you please review the FAQ section of Netlify and refer to the specific section that details the site wont build issue? I will make sure I will follow up with you later in the day, but please feel free to reach out to me if you still notice the same issue. We will escalate the issue and work on it on a priority basis based on your response.</p>
 	 
 	Once again, thank you for reaching out to us.</i><br/><br/>
-	
 
-<b>(optional/bonus) Can you set up a redirect from “/netlify/anything” to <u> https://www.google.com/search?q=anything</u> ?</b><br/>
-	<i>Add the below rewriting rules to .htaccess file in Apache servers(/var/www/html/) with the mod_rewrite enabled.<br/>
+
+    <b>(optional/bonus) Can you set up a redirect from “/netlify/anything” to <u> https://www.google.com/search?q=anything</u> ?</b><br/>
+    <i>Add the below rewriting rules to .htaccess file in Apache servers(/var/www/html/) with the mod_rewrite enabled.<br/>
 		RewriteEngine On<br/>
 		RewriteRule    ^/netlify/.*$     https://www.google.com/search?q=$1 [L]</i><br/>
-</div>
 
 </div>
